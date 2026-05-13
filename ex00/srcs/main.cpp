@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/ScalarConvert.hpp"
+#include "../headers/ScalarConverter.hpp"
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -24,4 +24,5 @@ int main(int argc, char *argv[]) {
 		arg = argv[1];
 		std::cout << arg << std::endl;
 	}
+	ScalarConverter::convert("A");
 }

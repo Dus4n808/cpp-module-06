@@ -10,16 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SCALARCONVERT_HPP
-#define SCALARCONVERT_HPP
+#ifndef SCALARCONVERTER_HPP
+#define SCALARCONVERTER_HPP
 
 #include <string>
 
-class ScalarConvert {
+class ScalarConverter {
 	private:
-		
+		ScalarConverter();
+		ScalarConverter(const ScalarConverter& copy);
+		ScalarConverter& operator=(const ScalarConverter& assign);
+		~ScalarConverter();
+		static void printChar(double);
+		void printInt(double);
+		void printFloat(double);
 	public:
-		static void convert(std::string value);
+		static void convert(const std::string& value);
 };
 
 #endif
