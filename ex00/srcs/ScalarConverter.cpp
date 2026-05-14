@@ -17,6 +17,8 @@
 #include <iomanip>
 #include <limits>
 
+
+// ===== FCO =====
 ScalarConverter::ScalarConverter() {}
 
 ScalarConverter::ScalarConverter(const ScalarConverter& copy) {
@@ -31,8 +33,8 @@ ScalarConverter& ScalarConverter::operator=(const ScalarConverter& assign) {
 ScalarConverter::~ScalarConverter() {}
 
 
-//methods
 
+//Enum of differents type of literals
 enum InputType {
 	CHAR_LITERAL,
 	PSEUDO_LITERAL,
@@ -40,7 +42,10 @@ enum InputType {
 	INVALID
 };
 
-void printChar(double value, InputType type) {
+// ===== Utils Func ======
+
+
+static void printChar(double value, InputType type) {
 	std::cout << "char : ";
 	if (type == INVALID || type == PSEUDO_LITERAL) {
 		std::cout << "impossible" << std::endl;
@@ -119,7 +124,7 @@ static void printDouble(double value, InputType type) {
 	std::cout << std::fixed << std::setprecision(1) << value << std::endl;
 }
 
-
+//Check if is a unique literal char = 'A'
 static bool isCharLiteral(const std::string& value) {
 	return value.length() == 1 
 	&& std::isprint(static_cast<unsigned char>(value[0]))
@@ -133,6 +138,8 @@ static bool isPseudoLiteral(std::string value) {
 	|| value == "inf" || value == "inff";
 }
 
+
+// ===== Methods =====
 void ScalarConverter::convert(const std::string& value) {
 	InputType type = INVALID;
 	double conv = 0.0;
