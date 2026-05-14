@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <iostream>
+#include <climits>
 
 ScalarConverter::ScalarConverter() {}
 
@@ -32,38 +33,77 @@ ScalarConverter::~ScalarConverter() {}
 
 //methods
 
-void ScalarConverter::printChar(double value) {
-	char c = '\0';
-	if (value <= 127 && value >= -128) {
-		c = static_cast<char>(value);
-		if (std::isprint(c)) {
-			std::cout << "char : " << c << std::endl;
-		}
-		else {
-			std::cout << "Non displayable" << std::endl;
-		}
+enum InputType {
+	CHAR_LITERAL,
+	PSEUDO_LITERAL,
+	NUMERIC,
+	INVALID
+};
+
+void printChar(double value, InputType type) {
+	std::cout << "char : ";
+	if (type == INVALID || type == PSEUDO_LITERAL) {
+		std::cout << "impossible" << std::endl;
+	}
+	else if (value < 0 || value > 127) {
+		std::cout << "impossible" << std::endl;
+	}
+	else if (!std::isprint(static_cast<unsigned char>(static_cast<int>(value)))) {
+		std::cout << "Non displayable" << std::endl;
 	}
 	else {
-		std::cout << "Impossible" << std::endl;
+		std::cout << "'" << static_cast<char>(value) << "'" << std::endl;
 	}
-	
+}
+
+static void printInt(double value, InputType type) {
+	std::cout << "int : ";
+	if (type == INVALID || type == PSEUDO_LITERAL) {
+		std::cout << "impossible" << std::endl;
+	}
+	else if (value < INT_MIN && value > INT_MAX) {
+		std::cout << "impossible" << std::endl;
+	}
+	else {
+		std::cout << static_cast<int>(value) << std::endl;
+	}
+}
+
+
+static bool isCharLiteral(const std::string& value) {
+	return value.length() == 1 
+	&& std::isprint(static_cast<unsigned char>(value[0]))
+	&& !std::isdigit(static_cast<unsigned char>(value[0]));
+}
+
+static bool isPseudoLiteral(std::string value) {
+	return value == "nan" || value == "nanf"
+	|| value == "+inf" || value == "-inf"
+	|| value == "+inff" || value == "-inff";
 }
 
 void ScalarConverter::convert(const std::string& value) {
-	char* ptr;
-	double conversion = std::strtod(value.c_str(), &ptr);
+	InputType type = INVALID;
+	double conv = 0.0;
 
-	if (value.length() == 1 && std::isprint(value[0]) && !std::isdigit(static_cast<char>(value[0]))) {
-		conversion = static_cast<char>(value[0]);
+	if (isCharLiteral(value)) {
+		type = CHAR_LITERAL;
+		conv = static_cast<double>(value[0]);
 	}
-	if (ptr == value.c_str()) {
-		std::cout << "Pas pu convertir" << std::endl;
-	}
-	else if (*ptr != '\0') {
-		std::cout << "Pas tout converti" << std::endl;
+	else if (isPseudoLiteral(value)) {
+		type = PSEUDO_LITERAL;
+		
 	}
 	else {
-		std::cout << "Tout converti" << std::endl;
+		char* ptr = NULL;
+		conv = std::strtod(value.c_str(), &ptr);
+		if (ptr != value.c_str() && (*ptr == '\0' || (*ptr == 'f' && *(ptr + 1) == '\0'))) {
+			type = NUMERIC;
+		}
+		else {
+			type = INVALID;
+		}
 	}
-	printChar(conversion);
+	printChar(conv, type);
+	printInt(conv, type);
 }

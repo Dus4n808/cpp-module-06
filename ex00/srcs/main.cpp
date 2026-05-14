@@ -22,7 +22,6 @@ int main(int argc, char *argv[]) {
 	std::string arg = "";
 	if (argv[1]) {
 		arg = argv[1];
-		std::cout << arg << std::endl;
+		ScalarConverter::convert(arg);
 	}
-	ScalarConverter::convert("A");
 }

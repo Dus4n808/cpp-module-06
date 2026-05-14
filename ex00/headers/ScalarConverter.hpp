@@ -21,9 +21,6 @@ class ScalarConverter {
 		ScalarConverter(const ScalarConverter& copy);
 		ScalarConverter& operator=(const ScalarConverter& assign);
 		~ScalarConverter();
-		static void printChar(double);
-		void printInt(double);
-		void printFloat(double);
 	public:
 		static void convert(const std::string& value);
 };
