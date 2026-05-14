@@ -13,9 +13,9 @@
 #include "../headers/ScalarConverter.hpp"
 #include <cctype>
 #include <cstdlib>
-#include <sstream>
 #include <iostream>
-#include <climits>
+#include <iomanip>
+#include <limits>
 
 ScalarConverter::ScalarConverter() {}
 
@@ -61,12 +61,62 @@ static void printInt(double value, InputType type) {
 	if (type == INVALID || type == PSEUDO_LITERAL) {
 		std::cout << "impossible" << std::endl;
 	}
-	else if (value < INT_MIN && value > INT_MAX) {
+	else if (value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max()) {
 		std::cout << "impossible" << std::endl;
 	}
 	else {
 		std::cout << static_cast<int>(value) << std::endl;
 	}
+}
+
+static void printFloat(double value, InputType type) {
+	std::cout << "float : ";
+
+	if (type == INVALID) {
+		std::cout << "impossible" << std::endl;
+		return;
+	}
+	if (value != value) {
+		std::cout << "nanf" << std::endl;
+		return;
+	}
+	if (value == std::numeric_limits<double>::infinity()) {
+		std::cout << "+inff" << std::endl;
+		return;
+	}
+	if (value == -std::numeric_limits<double>::infinity()) {
+		std::cout << "-inff" << std::endl;
+		return;
+	}
+	if (value < -std::numeric_limits<float>::max() || value > std::numeric_limits<float>::max()) {
+		std::cout << "impossible" << std::endl;
+	}
+
+	std::cout << std::fixed << std::setprecision(1) << static_cast<float>(value) << "f" << std::endl;
+	
+}
+
+static void printDouble(double value, InputType type) {
+	std::cout << "double : ";
+
+	if (type == INVALID) {
+		std::cout << "impossible" << std::endl;
+		return;
+	}
+	if (value != value) {
+		std::cout << "nan" << std::endl;
+		return; 
+	}
+	if (value == std::numeric_limits<double>::infinity()) {
+		std::cout << "+inf" << std::endl;
+		return;
+
+	}
+	if (value == -std::numeric_limits<double>::infinity()) {
+		std::cout << "-inf" << std::endl;
+		return;
+	}
+	std::cout << std::fixed << std::setprecision(1) << value << std::endl;
 }
 
 
@@ -79,7 +129,8 @@ static bool isCharLiteral(const std::string& value) {
 static bool isPseudoLiteral(std::string value) {
 	return value == "nan" || value == "nanf"
 	|| value == "+inf" || value == "-inf"
-	|| value == "+inff" || value == "-inff";
+	|| value == "+inff" || value == "-inff"
+	|| value == "inf" || value == "inff";
 }
 
 void ScalarConverter::convert(const std::string& value) {
@@ -92,7 +143,13 @@ void ScalarConverter::convert(const std::string& value) {
 	}
 	else if (isPseudoLiteral(value)) {
 		type = PSEUDO_LITERAL;
-		
+		if (value == "nan" || value == "nanf")
+			conv = std::numeric_limits<double>::quiet_NaN();
+		else if (value == "+inf" || value == "inf" || value == "+inff" || value == "inff")
+			conv = std::numeric_limits<double>::infinity();
+		else
+			conv = -std::numeric_limits<double>::infinity();
+ ;
 	}
 	else {
 		char* ptr = NULL;
@@ -106,4 +163,6 @@ void ScalarConverter::convert(const std::string& value) {
 	}
 	printChar(conv, type);
 	printInt(conv, type);
+	printFloat(conv, type);
+	printDouble(conv, type);
 }
