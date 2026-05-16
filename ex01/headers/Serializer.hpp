@@ -13,9 +13,14 @@
 #ifndef SERIALIZER_HPP
 #define SERIALIZER_HPP
 
-#include "../headers/Data.hpp"
+#include <string>
 #include <cstdint>
-#include <iostream>
+
+struct Data {
+	std::string firstName;
+	std::string lastName;
+	int age;
+};
 
 class Serializer {
 	private:
