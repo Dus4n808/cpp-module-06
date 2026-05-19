@@ -20,19 +20,24 @@
 #include "../headers/C.hpp"
 
 //Generate
-Base* generate(void) {
+static Base* generate(void) {
 	int random = rand() % 3;
-	if (random == 0)
+	if (random == 0) {
+		std::cout << "A" << std::endl;
 		return new A();
-	else if (random == 1)
+	}
+	else if (random == 1) {
+		std::cout << "B" << std::endl;
 		return new B();
-	else
+	}
+	else {
+		std::cout << "C" << std::endl;
 		return new C();
+	}
 }
 
 //Identify
-
-void identify(Base* p) {
+static void identify(Base* p) {
 	if (dynamic_cast<A*>(p))
 		std::cout << "A" << std::endl;
 	else if (dynamic_cast<B*>(p))
@@ -41,7 +46,7 @@ void identify(Base* p) {
 		std::cout << "C" << std::endl;
 }
 
-void identify(Base& p) {
+static void identify(Base& p) {
 	try {
 		(void)dynamic_cast<A&>(p);
 		std::cout << "A" << std::endl;
@@ -66,8 +71,10 @@ void identify(Base& p) {
 
 int main() {
 	srand(time(NULL));
+	std::cout << "===== Call generate() =====" << std::endl;
 	Base *test = generate();
-	
+
+	std::cout << "===== identify() =====" << std::endl;
 	identify(test);
 	identify(*test);
 
