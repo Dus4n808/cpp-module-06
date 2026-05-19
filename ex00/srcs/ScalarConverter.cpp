@@ -16,6 +16,8 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <cerrno>
+#include <pthread.h>
 
 
 // ===== FCO =====
@@ -34,7 +36,7 @@ ScalarConverter::~ScalarConverter() {}
 
 
 
-//Enum of differents type of literals
+
 enum InputType {
 	CHAR_LITERAL,
 	PSEUDO_LITERAL,
@@ -95,6 +97,7 @@ static void printFloat(double value, InputType type) {
 	}
 	if (value < -std::numeric_limits<float>::max() || value > std::numeric_limits<float>::max()) {
 		std::cout << "impossible" << std::endl;
+		return;
 	}
 
 	std::cout << std::fixed << std::setprecision(1) << static_cast<float>(value) << "f" << std::endl;
@@ -156,16 +159,22 @@ void ScalarConverter::convert(const std::string& value) {
 			conv = std::numeric_limits<double>::infinity();
 		else
 			conv = -std::numeric_limits<double>::infinity();
- ;
 	}
 	else {
 		char* ptr = NULL;
+		errno = 0;
 		conv = std::strtod(value.c_str(), &ptr);
-		if (ptr != value.c_str() && (*ptr == '\0' || (*ptr == 'f' && *(ptr + 1) == '\0'))) {
-			type = NUMERIC;
+		if (ptr == value.c_str()) {
+			type = INVALID;
+		} 
+		else if (*ptr != '\0' && !(*ptr == 'f' && *(ptr + 1) == '\0')){
+			type = INVALID;
+		}
+		else if (errno == ERANGE) {
+			type = INVALID;
 		}
 		else {
-			type = INVALID;
+			type = NUMERIC;
 		}
 	}
 	printChar(conv, type);

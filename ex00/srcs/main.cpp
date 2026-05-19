@@ -11,14 +11,17 @@
 /* ************************************************************************** */
 
 #include "../headers/ScalarConverter.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <ostream>
 #include <string>
 
 
 int main(int argc, char *argv[]) {
-	if (argc > 3)
-		std::cerr << "Error" << std::endl;
+	if (argc > 3) {
+		std::cerr << "Usage: ./exec [number]" << std::endl;
+		return EXIT_FAILURE;
+	}
 	std::string arg = "";
 	if (argv[1]) {
 		arg = argv[1];

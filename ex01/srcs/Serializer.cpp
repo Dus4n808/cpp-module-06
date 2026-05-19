@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../headers/Serializer.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 //===== FCO =====
 

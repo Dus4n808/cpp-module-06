@@ -11,30 +11,28 @@
 /* ************************************************************************** */
 
 #include "../headers/Serializer.hpp"
-#include <cstdint>
 #include <iostream>
 #include <ostream>
+#include <stdint.h>
 
-void printData(Data *ptr) {
+static void printData(Data *ptr) {
 	std::cout << "First name : " << ptr->firstName << std::endl;
-	std::cout << "Last name : " << ptr->lastName << std::endl;
-	std::cout << "Age : " << ptr->age << std::endl;
+  	std::cout << "Last name : " << ptr->lastName << std::endl;
+   	std::cout << "Age : " << ptr->age << std::endl;
 }
 
 int main() {
+	Data toTest;
+	toTest.firstName = "John";
+	toTest.lastName = "Doe";
+	toTest.age = 100;
 
-	Data test;
-	test.firstName = "Dusan";
-	test.lastName = "Fama";
-	test.age = 29;
-	printData(&test);
-
-	uintptr_t raw = Serializer::serialize(&test);
-	std::cout << "Raw value of adress test : " << raw << std::endl;
-
-	Data *newPtr = Serializer::deserialize(raw);
-	printData(newPtr);
-	uintptr_t newRaw = Serializer::serialize(newPtr);
-	std::cout << "Raw value of adress newPtr " << newRaw << std::endl;
-	std::cout << (&test == newPtr) << std::endl;
+	printData(&toTest);
+	uintptr_t rawValue = Serializer::serialize(&toTest);
+	std::cout << rawValue << std::endl;
+	Data *newValue = Serializer::deserialize(rawValue);
+	uintptr_t newRawValue = Serializer::serialize(newValue);
+	std::cout << newRawValue << std::endl;
+	printData(newValue);
+	std::cout << (newRawValue == rawValue) << std::endl;
 }
